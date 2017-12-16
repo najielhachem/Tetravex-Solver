@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "tetravex.hpp"
+#include "solver.hpp"
 
 int main(int argc, char** argv)
 {
@@ -14,7 +15,9 @@ int main(int argc, char** argv)
 	// Start Test
 	Tetravex t = Tetravex(width);	
 	t.random_init();
+	solve(t);
 	std::cout << t;
+		
 	// End Test
 
 	return 0;
