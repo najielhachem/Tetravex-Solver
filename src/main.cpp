@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	int width = atoi(argv[1]);
 	// Start Test
 	Tetravex t = Tetravex(width);	
-	t.random_solved_init();
+	t.random_init();
 	std::cout << t;
 	// End Test
 

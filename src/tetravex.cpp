@@ -1,6 +1,8 @@
 #include "tetravex.hpp"
 
 #include <stdlib.h>
+#include <algorithm>
+#include <random>
 
 Tetravex::Tetravex(int width, int height, int nb_values)
 {
@@ -68,6 +70,15 @@ void Tetravex::random_solved_init()
 				this->pieces[k].values[W] = this->pieces[i * this->width + (j - 1)].values[E];
 		}
 	}
+}
+
+void Tetravex::random_init()
+{
+	this->random_solved_init();
+
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(this->pieces.begin(), this->pieces.end(), g);
 }
 
 std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex)
