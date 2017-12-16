@@ -13,22 +13,22 @@ Tetravex::Tetravex(int width, int height, int nb_values)
 		height = width;
 	this->height = height;
 	this->nb_values = nb_values;
-	this->squares = std::vector<Square>(this->width * this->height);
+	this->pieces = std::vector<Piece>(this->width * this->height);
 }
 
-void Tetravex::set_squares(std::vector<Square> squares)
+void Tetravex::set_pieces(std::vector<Piece> pieces)
 {
-	if (squares.size() != this->width * this->height)
+	if (pieces.size() != this->width * this->height)
 	{
 		// TODO Throw Error
 		return; 
 	}
-	this->squares = squares;
+	this->pieces = pieces;
 }
 
-std::vector<Square> Tetravex::get_squares() const
+std::vector<Piece> Tetravex::get_pieces() const
 {
-	return this->squares;
+	return this->pieces;
 }
 
 int Tetravex::get_width() const
@@ -55,17 +55,17 @@ void Tetravex::random_solved_init()
 		for (int j = 0; j < this->width; ++j)
 		{
 			int k = i * this->width + j;
-			this->squares[k].values[E] = rand() % this->nb_values;
-			this->squares[k].values[S] = rand() % this->nb_values;
+			this->pieces[k].values[E] = rand() % this->nb_values;
+			this->pieces[k].values[S] = rand() % this->nb_values;
 			
 			if (i == 0) 
-				this->squares[k].values[N] = rand() % this->nb_values;
+				this->pieces[k].values[N] = rand() % this->nb_values;
 			else 
-				this->squares[k].values[N] = this->squares[(i - 1) * this->width + j].values[S];
+				this->pieces[k].values[N] = this->pieces[(i - 1) * this->width + j].values[S];
 			if (j == 0)
-				this->squares[k].values[W] = rand() % this->nb_values;
+				this->pieces[k].values[W] = rand() % this->nb_values;
 			else 
-				this->squares[k].values[W] = this->squares[i * this->width + (j - 1)].values[E];
+				this->pieces[k].values[W] = this->pieces[i * this->width + (j - 1)].values[E];
 		}
 	}
 }
@@ -78,11 +78,11 @@ std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex)
 		{
 			for (int k = 0; k < tetravex.get_width(); ++k)
 			{
-				Square sq = tetravex.get_squares()[i * tetravex.get_width() + k];
+				Piece p = tetravex.get_pieces()[i * tetravex.get_width() + k];
 				if (j == 1)
-					o << sq.values[3] << " " << sq.values[1];
+					o << p.values[3] << " " << p.values[1];
 				else
-					o << " " << sq.values[j] << " ";
+					o << " " << p.values[j] << " ";
 				o << " ";
 			}
 			o << "\n";
