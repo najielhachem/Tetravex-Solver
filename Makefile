@@ -16,7 +16,9 @@ LIB = $(parsubst %, $(LDIR)/%, $(_LIB))
 
 # Setting src files and dir
 SDIR = src
-_SRC = main.cpp
+_SRC = main.cpp \
+			 tetravex.cpp \
+			 solver.cpp 
 
 SRC = $(patsubst %, $(SDIR)/%, $(_SRC))
 
@@ -43,6 +45,12 @@ $(BIN): $(OBJ)
 			######################################################
 
 $(ODIR)/main.o: $(SDIR)/main.cpp 
+	$(CPP) $(CPPFLAGS) $(CPPLIBS) -c $< -o $@
+
+$(ODIR)/tetravex.o: $(SDIR)/tetravex.cpp $(SDIR)/tetravex.hpp  
+	$(CPP) $(CPPFLAGS) $(CPPLIBS) -c $< -o $@
+
+$(ODIR)/solver.o: $(SDIR)/solver.cpp $(SDIR)/solver.hpp  
 	$(CPP) $(CPPFLAGS) $(CPPLIBS) -c $< -o $@
 
 ##############################################################################
