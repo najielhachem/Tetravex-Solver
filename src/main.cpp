@@ -1,14 +1,21 @@
 #include <iostream>
+#include <stdlib.h>
+
+#include "tetravex.hpp"
 
 int main(int argc, char** argv)
 {
 	if (argc < 2)
 	{
-		std::cerr << "Usage: " << argv[0] << " input_file.txt\n";
+		std::cerr << "Usage: " << argv[0] << "width [height]\n";
 		return -1;
 	}
-	file_path = argv[1];
-	// TODO Read file
+	int width = atoi(argv[1]);
+	// Start Test
+	Tetravex t = Tetravex(width);	
+	t.random_solved_init();
+	std::cout << t;
+	// End Test
 
 	return 0;
 }
