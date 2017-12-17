@@ -87,6 +87,7 @@ void Tetravex::random_init()
 
 std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex)
 {
+	o << "------------------------------\n";
 	for (int i = 0; i < tetravex.get_height(); ++i)
 	{
 		for (int j = 0; j < 3; ++j)
@@ -104,5 +105,6 @@ std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex)
 		}
 		o << "\n";
 	}
+	o << "------------------------------\n";
 	return o;
 }

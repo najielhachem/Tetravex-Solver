@@ -21,8 +21,8 @@ int main(int argc, char** argv)
 	std::cout << "---------------------\n";
 	std::cout << "---------------------\n";
 	Solver s = Solver();
-	s.solve(t);
-	std::cout << "random puzzle solved \n";	
+	int it = s.solve(t, 0.99);
+	std::cout << "random puzzle solved in " << it << " iterations\n";	
 	std::cout << "---------------------\n";
 	std::cout << t;
 	// End Test

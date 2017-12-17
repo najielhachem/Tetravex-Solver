@@ -94,7 +94,7 @@ double Solver::init_T(Tetravex& t)
 
 }
 
-void Solver::solve(Tetravex& t, double lambda, int verbose)
+int Solver::solve(Tetravex& t, double lambda, int max_iterations, int verbose)
 {
 	t.random_shuffle();
 	double T = this->init_T(t);
@@ -104,6 +104,7 @@ void Solver::solve(Tetravex& t, double lambda, int verbose)
 	int height = t.get_height();
 	int n = height * width;
 
+	int iterations = 0;
 	double U1 = get_U(pieces, width, height);
 	while (U1 != 0)
 	{
@@ -125,11 +126,14 @@ void Solver::solve(Tetravex& t, double lambda, int verbose)
 		else if (sample(delta_U, T)) // choose candidate based on transition proba
 			t.set_pieces(pieces);
 
-		if (verbose)
-			std::cout << t;
-
 		T *= lambda;
 		U1 = get_U(pieces, width, height);
-	}
+		iterations++;
 
+		if (verbose)
+			std::cout << t;
+		if (max_iterations == iterations)
+			break;
+	}
+	return iterations;
 }
