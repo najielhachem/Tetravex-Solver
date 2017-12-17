@@ -46,8 +46,52 @@ double Solver::get_U(const std::vector<Piece>& pieces, const int width, const in
 
 double Solver::init_T(Tetravex& t)
 {
-	// TODO
-	return 100;
+	double T1 = 0;
+	double T2 = 1000;
+	double T = T2;
+
+	std::vector<Piece> pieces = t.get_pieces();
+	int width = t.get_width();
+	int height = t.get_height();
+	int n = height * width;
+
+	double eps_T = 1;
+
+	while ((T2 - T1) > eps_T)
+	{
+		double T = T1 + (T2 - T1) / 2;
+
+		int uniform = 0;
+		int nb_samples = 100;
+	
+		// check if uniform distribution
+		// sample m times and check if transition proba is near 1
+		for (int i = 0; i < nb_samples; ++i)
+		{
+			double eps_prob = 0.02;
+			
+			int i1 = rand() % n;
+			int i2 = i1;
+			while (i2 == i1)
+				i2 = rand() % n;
+
+			double U1 = get_U(pieces, width, height);
+			std::iter_swap(pieces.begin() + i1, pieces.begin() + i2);
+			double U2 = get_U(pieces, width, height);
+			
+			if (this->transition_prob(U2 - U1, T) > 1 - eps_prob)
+				uniform += 1;
+		}
+
+		if (uniform >= 0.95 * nb_samples)
+			T2 = T;
+		else
+			T1 = T;
+	}
+
+	std::cout << "Initial T: " << T2 << std::endl;
+	return T2;
+
 }
 
 void Solver::solve(Tetravex& t, double lambda, int verbose)
@@ -68,10 +112,10 @@ void Solver::solve(Tetravex& t, double lambda, int verbose)
 		int i2 = i1;
 		while (i2 == i1)
 			i2 = rand() % n;
-	
+
 		// 2- swap axis
 		std::iter_swap(pieces.begin() + i1, pieces.begin() + i2);
-		
+
 		// 3- delta_u
 		double U2 = get_U(pieces, width, height);
 		double delta_U = U2 - U1;
