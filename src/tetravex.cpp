@@ -87,7 +87,13 @@ void Tetravex::random_init()
 
 std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex)
 {
-	o << "------------------------------\n";
+	for (int i = 0; i < tetravex.get_width(); ++i)
+			o << "------";
+		o << "\n";
+
+	for (int i = 0; i < tetravex.get_width(); ++i)
+			o << " ---  ";
+		o << "\n";
 	for (int i = 0; i < tetravex.get_height(); ++i)
 	{
 		for (int j = 0; j < 3; ++j)
@@ -96,15 +102,19 @@ std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex)
 			{
 				Piece p = tetravex.get_pieces()[i * tetravex.get_width() + k];
 				if (j == 1)
-					o << p.values[3] << " " << p.values[1];
+					o << "|" << p.values[3] << " " << p.values[1] << "|";
 				else
-					o << " " << p.values[j] << " ";
+					o << "| " << p.values[j] << " |";
 				o << " ";
 			}
 			o << "\n";
 		}
+		for (int j = 0; j < tetravex.get_width(); ++j)
+			o << " ---  ";
 		o << "\n";
 	}
-	o << "------------------------------\n";
+	for (int i = 0; i < tetravex.get_width(); ++i)
+			o << "------";
+		o << "\n";
 	return o;
 }
