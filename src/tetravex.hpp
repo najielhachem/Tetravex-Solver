@@ -23,7 +23,8 @@ class Tetravex
 		std::vector<Piece> get_pieces() const;
 		int get_width() const;
 		int get_height() const;
-		
+
+		void random_shuffle();	
 		void random_solved_init();
 		void random_init();
 

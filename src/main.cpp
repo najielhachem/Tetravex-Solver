@@ -15,9 +15,16 @@ int main(int argc, char** argv)
 	// Start Test
 	Tetravex t = Tetravex(width);	
 	t.random_init();
-	solve(t);
+	std::cout << "random unsolved puzzle\n";	
+	std::cout << "---------------------\n";
 	std::cout << t;
-		
+	std::cout << "---------------------\n";
+	std::cout << "---------------------\n";
+	Solver s = Solver();
+	s.solve(t);
+	std::cout << "random puzzle solved \n";	
+	std::cout << "---------------------\n";
+	std::cout << t;
 	// End Test
 
 	return 0;

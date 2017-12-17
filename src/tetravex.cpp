@@ -72,13 +72,17 @@ void Tetravex::random_solved_init()
 	}
 }
 
-void Tetravex::random_init()
+void Tetravex::random_shuffle()
 {
-	this->random_solved_init();
-
 	std::random_device rd;
 	std::mt19937 g(rd());
 	std::shuffle(this->pieces.begin(), this->pieces.end(), g);
+}
+
+void Tetravex::random_init()
+{
+	this->random_solved_init();
+	this->random_shuffle();
 }
 
 std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex)
