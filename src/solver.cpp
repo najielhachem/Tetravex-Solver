@@ -1,10 +1,16 @@
 #include "solver.hpp"
 
 #include <iostream>
+#include <math.h>
 
-int energie(Tetravex& t)
+double proba_transition(double delta_U, double T)
 {
-	int e = 0;
+	return exp(delta_U / T);
+}
+
+double energie(Tetravex& t)
+{
+	double U = 0;
 	std::vector<Piece> pieces = t.get_pieces();
 	for (int i = 0; i < t.get_height(); ++i)
 	{
@@ -14,16 +20,16 @@ int energie(Tetravex& t)
 
 			if (i != 0) 
 				if (pieces[k].values[N] != pieces[(i - 1) * t.get_width() + j].values[S])
-					e += 1;
+					U += 1;
 			if (j != 0)
 				if (pieces[k].values[W] != pieces[i * t.get_width() + (j - 1)].values[E])
-					e += 1;
+					U += 1;
 		}
 	}
-	return e;
+	return U;
 }
 
 void solve(Tetravex& t)
 {
-	std::cout << energie(t) << "\n";
+
 }
