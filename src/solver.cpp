@@ -47,7 +47,7 @@ double Solver::get_U(const std::vector<Piece>& pieces, const int width, const in
 double Solver::init_T(Tetravex& t)
 {
 	double T1 = 0;
-	double T2 = 1000;
+	double T2 = 10000;
 	double T = T2;
 
 	std::vector<Piece> pieces = t.get_pieces();
@@ -97,7 +97,7 @@ double Solver::init_T(Tetravex& t)
 int Solver::solve(Tetravex& t, double lambda, int max_iterations, int verbose)
 {
 	t.random_shuffle();
-	double T = this->init_T(t);
+  double T = this->init_T(t);
 
 	std::vector<Piece> pieces = t.get_pieces();
 	int width = t.get_width();
@@ -131,7 +131,7 @@ int Solver::solve(Tetravex& t, double lambda, int max_iterations, int verbose)
 		iterations++;
 
 		if (verbose)
-			std::cout << t;
+			std::cout << iterations << ": " << U1 << std::endl;
 		if (max_iterations == iterations)
 			break;
 	}
