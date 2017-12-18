@@ -12,14 +12,9 @@ Solver::Solver()
 	this->dist = std::uniform_real_distribution<double>(0.0, 1.0);
 }
 
-double Solver::transition_prob(double delta_U, double T)
-{
-	return exp(delta_U / T);
-}
-
 int Solver::sample(double delta_U, double T)
 {
-	double p = this->transition_prob(delta_U, T);
+	double p = exp(- delta_U / T);
 	if (this->dist(this->gen) < p)
 		return 1;
 	return 0;
@@ -47,7 +42,7 @@ double Solver::get_U(const std::vector<Piece>& pieces, const int width, const in
 double Solver::init_T(Tetravex& t)
 {
 	double T1 = 0;
-	double T2 = 10000;
+	double T2 = 1000000;
 	double T = T2;
 
 	std::vector<Piece> pieces = t.get_pieces();
@@ -59,7 +54,7 @@ double Solver::init_T(Tetravex& t)
 
 	while ((T2 - T1) > eps_T)
 	{
-		double T = T1 + (T2 - T1) / 2;
+		T = T1 + (T2 - T1) / 2;
 
 		int uniform = 0;
 		int nb_samples = 100;
@@ -68,7 +63,7 @@ double Solver::init_T(Tetravex& t)
 		// sample m times and check if transition proba is near 1
 		for (int i = 0; i < nb_samples; ++i)
 		{
-			double eps_prob = 0.02;
+			double eps_prob = 0.01;
 			
 			int i1 = rand() % n;
 			int i2 = i1;
@@ -79,18 +74,18 @@ double Solver::init_T(Tetravex& t)
 			std::iter_swap(pieces.begin() + i1, pieces.begin() + i2);
 			double U2 = get_U(pieces, width, height);
 			
-			if (this->transition_prob(U2 - U1, T) > 1 - eps_prob)
+			if (exp(- abs(U2 - U1) / T) > 1 - eps_prob)
 				uniform += 1;
 		}
 
-		if (uniform >= 0.95 * nb_samples)
+		if (uniform >= 0.98 * nb_samples)
 			T2 = T;
 		else
 			T1 = T;
 	}
 
-	std::cout << "Initial T: " << T2 << std::endl;
-	return T2;
+	std::cout << "Initial T: " << T << std::endl;
+	return T;
 
 }
 
@@ -121,10 +116,10 @@ int Solver::solve(Tetravex& t, double lambda, int max_iterations, int verbose)
 		double U2 = get_U(pieces, width, height);
 		double delta_U = U2 - U1;
 
-		if (delta_U < 0) // 4- choose candidate
+		if (delta_U <= 0) // 4- choose candidate
 			t.set_pieces(pieces);
 		else if (sample(delta_U, T)) // choose candidate based on transition proba
-			t.set_pieces(pieces);
+				t.set_pieces(pieces);
 
 		T *= lambda;
 		U1 = get_U(pieces, width, height);
