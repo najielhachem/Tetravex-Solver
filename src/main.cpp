@@ -17,7 +17,7 @@ void usage(char* file)
 
 }
 
-void parse(int argc, char** argv, int& w, int& h, int& v, float& l, int& m)
+int parse(int argc, char** argv, int& w, int& h, int& v, float& l, int& m)
 {
 	w = 3;
 	h = 3;
@@ -37,24 +37,31 @@ void parse(int argc, char** argv, int& w, int& h, int& v, float& l, int& m)
 			l = atof(argv[i + 1]);
 		if (strcmp(argv[i], "-m") == 0)
 			m = atoi(argv[i + 1]);
+		if (strcmp(argv[i], "--help") == 0)
+		{
+			usage(argv[0]);
+			return 0;
+		}
 	}
+	return 1;
 }
 
 int main(int argc, char** argv)
 {
 	int w, h, v, m;
 	float l;
-	parse(argc, argv, w, h, v, l, m);
-	// Start Test
-	Tetravex t = Tetravex(w, h);	
-	t.random_init();
-	std::cout << "random unsolved puzzle\n";	
-	std::cout << t;
-	Solver s = Solver();
-	int it = s.solve(t, l, m, v);
-	std::cout << "random puzzle solved in " << it << " iterations\n";	
-	std::cout << t;
-	// End Test
-
+	if (parse(argc, argv, w, h, v, l, m))
+	{
+		// Start Test
+		Tetravex t = Tetravex(w, h);	
+		t.random_init();
+		std::cout << "random unsolved puzzle\n";	
+		std::cout << t;
+		Solver s = Solver();
+		int it = s.solve(t, l, m, v);
+		std::cout << "random puzzle solved in " << it << " iterations\n";	
+		std::cout << t;
+		// End Test
+	}
 	return 0;
 }
