@@ -12,12 +12,13 @@ Solver::Solver()
 	this->dist = std::uniform_real_distribution<double>(0.0, 1.0);
 }
 
-int Solver::sample(double delta_U, double T)
+bool Solver::sample(double delta_U, double T)
 {
 	double p = exp(- delta_U / T);
-	if (this->dist(this->gen) < p)
-		return 1;
-	return 0;
+	double tmp = this->dist(this->gen); 
+	if (tmp < p)
+		return true;
+	return false;
 }
 
 double Solver::get_U(const std::vector<Piece>& pieces, const int width, const int height)
@@ -93,6 +94,7 @@ int Solver::solve(Tetravex& t, double lambda, int max_iterations, int verbose)
 {
 	t.random_shuffle();
   double T = this->init_T(t);
+	double T_min = 0.5;
 
 	std::vector<Piece> pieces = t.get_pieces();
 	int width = t.get_width();
@@ -119,16 +121,24 @@ int Solver::solve(Tetravex& t, double lambda, int max_iterations, int verbose)
 		if (delta_U <= 0) // 4- choose candidate
 			t.set_pieces(pieces);
 		else if (sample(delta_U, T)) // choose candidate based on transition proba
-				t.set_pieces(pieces);
+			t.set_pieces(pieces);
 
-		T *= lambda;
+		if (verbose)
+			std::cout << iterations << ": T(" << T << ") -- U(" << U1 << ")"
+								<< std::endl
+								<< "\t" << i1 << " --> " << i2 << " : P(" << exp(-delta_U / T) << ")"
+								<< std::endl;
+	
+		if (max_iterations == iterations)
+			break;
+
+		if (T > T_min)
+			T *= lambda;
+		
+		pieces = t.get_pieces();
 		U1 = get_U(pieces, width, height);
 		iterations++;
 
-		if (verbose)
-			std::cout << iterations << ": " << U1 << std::endl;
-		if (max_iterations == iterations)
-			break;
 	}
 	return iterations;
 }
