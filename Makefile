@@ -36,8 +36,11 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 BIN = solver.out
 
-all: $(BIN)
+all: $(ODIR) $(BIN)
 	
+$(ODIR): 
+	mkdir -p $(ODIR)
+
 $(BIN): $(OBJ)
 	$(CPP) $(CPPFLAGS) $(OBJ) $(CPPLIBS) -o $(BIN)
 
@@ -58,8 +61,10 @@ $(ODIR)/solver.o: $(SDIR)/solver.cpp $(SDIR)/solver.hpp
 run: build
 	$(EXEC) ./$(BIN)
 
+RM = rm -rf
+
 clean:
-	$(RM) $(OBJ) $(BIN) 
+	$(RM) $(ODIR) $(BIN) 
 
 .PHONY: clean
 
