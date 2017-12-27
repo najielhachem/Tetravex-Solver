@@ -8,7 +8,7 @@
 void usage(char* file)
 {
 	std::cout << "Usage:\n" 																							 
-					  << "\t" << file << " [-w width -h height -l lambda -m max_iter -v]\n"
+					  << "\t" << file << " [-w width -h height -l lambda -Tmin temperature -Tmax temperature -m max_iter -v]\n"
 						<< "Help:\n"
 						<< "\t" << file << " --help\n";
 }
@@ -16,27 +16,34 @@ void usage(char* file)
 void help(char* file)
 {
 	std::cout << "Usage:\n" 																							 
-					  << "\t" << file << " [-w width -h height -l lambda -m max_iter -v]\n"
+					  << "\t" << file << " [-w width -h height -l lambda -Tmin temperature -Tmax temperature -m max_iter -v]\n"
 						<< "\nDesctiption:\n" 																				 
-						<< "\t-w width    : set board width to width\n" 												 
-						<< "\t-h height   : set board height to height\n" 											 
-						<< "\t-l lambda   : set lambda to lambda\n" 											 
-						<< "\t-m max_iter : set max number of iterations to max_iter (-1 <=> inf)\n" 		 
-						<< "\t-v          : set verbose to true\n"
+						<< "\t-w width          : set board width to width\n" 												 
+						<< "\t-h height         : set board height to height\n" 											 
+						<< "\t-l lambda         : set lambda to lambda\n" 											 
+						<< "\t-Tmin temperature : set temperature's lower bound\n" 											 
+						<< "\t-Tmax temperature : set starting temperature\n" 											 
+						<< "\t-m max_iter       : set max number of iterations to max_iter (-1 <=> inf)\n" 	
+						<< "\t-v                : set verbose to true\n"
 						<< "\nDefault Values:\n"
-						<< "\twidth    : 3\n" 												 
-						<< "\theight   : 3\n" 											 
-						<< "\tlambda   : 0.99\n" 											 
-						<< "\tmax_iter : inf\n" 		 
-						<< "\tverbose	 : false\n";
+						<< "\twidth             : 3\n" 												 
+						<< "\theight            : 3\n" 											 
+						<< "\tlambda            : 0.99\n" 											 
+						<< "\tmin_temperature   : 0.5\n"
+						<< "\tmax_temperature   : end point of uniform distribution\n"
+						<< "\tmax_iter          : inf\n" 		 
+						<< "\tverbose           : false\n";
 }
 
-int parse(int argc, char** argv, int& w, int& h, int& v, float& l, int& m)
+int parse(int argc, char** argv, int& w, int& h, int& v,
+		float& l, float& T_min, float& T_max, int& m)
 {
 	w = 3;
 	h = 3;
 	v = 0;
 	l = 0.99;
+	T_max = -1;
+	T_min = 0.5;
 	m = -1;
 
 	for (int i = 1; i < argc; ++i)
@@ -49,6 +56,10 @@ int parse(int argc, char** argv, int& w, int& h, int& v, float& l, int& m)
 			v = 1;
 		else if (strcmp(argv[i], "-l") == 0)
 			l = atof(argv[++i]);
+		else if (strcmp(argv[i], "-Tmin") == 0)
+			T_min = atof(argv[++i]);
+		else if (strcmp(argv[i], "-Tmax") == 0)
+			T_max = atof(argv[++i]);
 		else if (strcmp(argv[i], "-m") == 0)
 			m = atoi(argv[++i]);
 		else if (strcmp(argv[i], "--help") == 0)
@@ -77,8 +88,8 @@ int parse(int argc, char** argv, int& w, int& h, int& v, float& l, int& m)
 int main(int argc, char** argv)
 {
 	int w, h, v, m;
-	float l;
-	if (parse(argc, argv, w, h, v, l, m))
+	float l, T_min, T_max;
+	if (parse(argc, argv, w, h, v, l, T_min, T_max, m))
 	{
 		// Start Test
 		Tetravex t = Tetravex(w, h);	
@@ -86,7 +97,7 @@ int main(int argc, char** argv)
 		std::cout << "random unsolved puzzle\n";	
 		std::cout << t;
 		Solver s = Solver();
-		int it = s.solve(t, l, m, v);
+		int it = s.solve(t, l, T_min, T_max, m, v);
 		std::cout << "random puzzle solved in " << it << " iterations\n";	
 		std::cout << t;
 		// End Test

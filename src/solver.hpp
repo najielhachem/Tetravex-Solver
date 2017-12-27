@@ -11,7 +11,8 @@ class Solver{
 	public:
 		Solver();
 
-		int solve(Tetravex& t, double lambda = 0.999, int max_iterations = -1, int verbose = 0);
+		int solve(Tetravex& t, double lambda, double T_min,
+				double T_max, int max_iterations, int verbose);
 
 		double get_U(const std::vector<Piece>& pieces, const int width, const int height);
 		double init_T(Tetravex& t);

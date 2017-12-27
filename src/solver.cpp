@@ -90,11 +90,10 @@ double Solver::init_T(Tetravex& t)
 
 }
 
-int Solver::solve(Tetravex& t, double lambda, int max_iterations, int verbose)
+int Solver::solve(Tetravex& t, double lambda, double T_min, double T_max, int max_iterations, int verbose)
 {
 	t.random_shuffle();
-  double T = this->init_T(t);
-	double T_min = 0.5;
+	double T = T_max > 0 ? T_max : this->init_T(t);
 
 	std::vector<Piece> pieces = t.get_pieces();
 	int width = t.get_width();
@@ -118,15 +117,22 @@ int Solver::solve(Tetravex& t, double lambda, int max_iterations, int verbose)
 		double U2 = get_U(pieces, width, height);
 		double delta_U = U2 - U1;
 
+		bool print = false;
 		if (delta_U <= 0) // 4- choose candidate
+		{
 			t.set_pieces(pieces);
+			print = true;
+		}	
 		else if (sample(delta_U, T)) // choose candidate based on transition proba
+		{
 			t.set_pieces(pieces);
+			print = true;
+		}
 
-		if (verbose)
-			std::cout << iterations << ": T(" << T << ") -- U(" << U1 << ")"
+		if (verbose && print)
+			std::cout << "iteration: " << iterations << " -- T: " << T << " -- U: " << U1
 								<< std::endl
-								<< "\t" << i1 << " --> " << i2 << " : P(" << exp(-delta_U / T) << ")"
+								<< t
 								<< std::endl;
 	
 		if (max_iterations == iterations)
@@ -134,6 +140,8 @@ int Solver::solve(Tetravex& t, double lambda, int max_iterations, int verbose)
 
 		if (T > T_min)
 			T *= lambda;
+		else
+			T = T_min;
 		
 		pieces = t.get_pieces();
 		U1 = get_U(pieces, width, height);
