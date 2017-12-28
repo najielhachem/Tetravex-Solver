@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <string.h>
 
@@ -8,7 +9,7 @@
 void usage(char* file)
 {
 	std::cout << "Usage:\n" 																							 
-					  << "\t" << file << " [-w width -h height -l lambda -Tmin temperature -Tmax temperature -m max_iter -v]\n"
+					  << "\t" << file << " [-w width -h height -l lambda -Tmin temperature -Tmax temperature -m max_iter -f input_file -v]\n"
 						<< "Help:\n"
 						<< "\t" << file << " --help\n";
 }
@@ -16,7 +17,7 @@ void usage(char* file)
 void help(char* file)
 {
 	std::cout << "Usage:\n" 																							 
-					  << "\t" << file << " [-w width -h height -l lambda -Tmin temperature -Tmax temperature -m max_iter -v]\n"
+					  << "\t" << file << " [-w width -h height -l lambda -Tmin temperature -Tmax temperature -m max_iter -f input_file -v]\n"
 						<< "\nDesctiption:\n" 																				 
 						<< "\t-w width          : set board width to width\n" 												 
 						<< "\t-h height         : set board height to height\n" 											 
@@ -24,6 +25,7 @@ void help(char* file)
 						<< "\t-Tmin temperature : set temperature's lower bound\n" 											 
 						<< "\t-Tmax temperature : set starting temperature\n" 											 
 						<< "\t-m max_iter       : set max number of iterations to max_iter (-1 <=> inf)\n" 	
+						<< "\t-f input_file     : read tetravex from input_file\n" 	
 						<< "\t-v                : set verbose to true\n"
 						<< "\nDefault Values:\n"
 						<< "\twidth             : 3\n" 												 
@@ -31,12 +33,14 @@ void help(char* file)
 						<< "\tlambda            : 0.99\n" 											 
 						<< "\tmin_temperature   : 0.5\n"
 						<< "\tmax_temperature   : end point of uniform distribution\n"
-						<< "\tmax_iter          : inf\n" 		 
+						<< "\tmax_iter          : inf\n" 		
+						<< "\tinput_file        : if not defined, random tetravex is generated\n" 		
 						<< "\tverbose           : false\n";
 }
 
 int parse(int argc, char** argv, int& w, int& h, int& v,
-		float& l, float& T_min, float& T_max, int& m)
+		float& l, float& T_min, float& T_max, int& m,
+		char* input_file)
 {
 	w = 3;
 	h = 3;
@@ -60,6 +64,8 @@ int parse(int argc, char** argv, int& w, int& h, int& v,
 			T_min = atof(argv[++i]);
 		else if (strcmp(argv[i], "-Tmax") == 0)
 			T_max = atof(argv[++i]);
+		else if (strcmp(argv[i], "-f") == 0)
+			strcpy(input_file, argv[++i]);
 		else if (strcmp(argv[i], "-m") == 0)
 			m = atoi(argv[++i]);
 		else if (strcmp(argv[i], "--help") == 0)
@@ -89,11 +95,23 @@ int main(int argc, char** argv)
 {
 	int w, h, v, m;
 	float l, T_min, T_max;
-	if (parse(argc, argv, w, h, v, l, T_min, T_max, m))
+	char input[256];
+	if (parse(argc, argv, w, h, v, l, T_min, T_max, m, input))
 	{
 		// Start Test
 		Tetravex t = Tetravex(w, h);	
-		t.random_init();
+		if (input[0] == '\0')
+			t.random_init();
+		else
+		{
+			try {
+			std::ifstream is(input);
+			is >> t;
+			} catch (const std::exception& e) {
+				std::cout << e.what();
+				return 1;
+			}
+		}
 		std::cout << "random unsolved puzzle\n";	
 		std::cout << t;
 		Solver s = Solver();
