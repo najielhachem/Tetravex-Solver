@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <iostream>
+#include <stdexcept>
+#include <stdlib.h>
 
 #define N 0
 #define E 1
@@ -11,7 +13,7 @@
 struct Piece
 {
 	// Edge values order: N-E-S-W
-	float values [4];
+	int values [4];
 };
 
 class Tetravex
@@ -36,3 +38,4 @@ class Tetravex
 };
 
 std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex);
+std::istream& operator>>(std::istream& i, Tetravex& tetravex);

@@ -101,18 +101,20 @@ int main(int argc, char** argv)
 		// Start Test
 		Tetravex t = Tetravex(w, h);	
 		if (input[0] == '\0')
+		{
 			t.random_init();
-		else
+			std::cout << "random unsolved puzzle\n";	
+		} else
 		{
 			try {
-			std::ifstream is(input);
-			is >> t;
+				std::ifstream is(input);
+				std::cout << "reading puzzle from file\n";	
+				is >> t;
 			} catch (const std::exception& e) {
 				std::cout << e.what();
 				return 1;
 			}
 		}
-		std::cout << "random unsolved puzzle\n";	
 		std::cout << t;
 		Solver s = Solver();
 		int it = s.solve(t, l, T_min, T_max, m, v);

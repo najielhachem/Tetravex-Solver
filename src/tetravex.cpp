@@ -21,10 +21,7 @@ Tetravex::Tetravex(int width, int height, int nb_values)
 void Tetravex::set_pieces(std::vector<Piece> pieces)
 {
 	if (pieces.size() != this->width * this->height)
-	{
-		// TODO Throw Error
-		return; 
-	}
+		throw std::length_error("invalid pieces size\n");
 	this->pieces = pieces;
 }
 
@@ -130,4 +127,28 @@ std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex)
 		o << "-\n";
 	
 	return o;
+}
+
+
+std::istream& operator>>(std::istream& i, Tetravex& tetravex)
+{
+	std::vector<Piece> tmp; 
+	std::cout << "";
+	Piece p;
+	char c;
+	int k = 0;
+	while (i.get(c))
+	{
+		if (c == ' ')
+		{
+			if (k != 4)
+				throw std::invalid_argument("Error in reading tetravex from file\n");
+			tmp.push_back(p);
+			k = 0;
+		} else
+			p.values[k++] = atoi(&c);
+	}
+	tmp.push_back(p);
+	tetravex.set_pieces(tmp);
+	return i;
 }
