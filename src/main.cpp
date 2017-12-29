@@ -96,6 +96,7 @@ int main(int argc, char** argv)
 	int w, h, v, m;
 	float l, T_min, T_max;
 	char input[256];
+	input[0] = '\0';
 	if (parse(argc, argv, w, h, v, l, T_min, T_max, m, input))
 	{
 		// Start Test
