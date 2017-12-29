@@ -129,7 +129,6 @@ std::ostream& operator<<(std::ostream& o, const Tetravex& tetravex)
 	return o;
 }
 
-
 std::istream& operator>>(std::istream& i, Tetravex& tetravex)
 {
 	std::vector<Piece> tmp; 
